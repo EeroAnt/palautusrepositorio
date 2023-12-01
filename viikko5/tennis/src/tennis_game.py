@@ -1,18 +1,19 @@
 class TennisGame:
     def __init__(self, player1_name, player2_name):
-        self.scores = {player1_name:0,player2_name:0}
-        self.player1_name = player1_name
-        self.player2_name = player2_name
+        self.player1 = Player(player1_name)
+        self.player2 = Player(player2_name)
 
     def won_point(self, player_name):
-        self.scores[player_name] += 1
+        if player_name == self.player1.name:
+            self.player1._won_point()
+        else:
+            self.player2._won_point()
     
     def get_score(self):
-        if self.scores[self.player1_name] == self.scores[self.player2_name]:
-            print((self.scores[self.player1_name], self.scores[self.player2_name]))
+        if self.player1.score == self.player2.score:
             score = self._even_score()
 
-        elif self.scores[self.player1_name] >= 4 or self.scores[self.player2_name] >= 4:
+        elif self.player1.score >= 4 or self.player2.score >= 4:
             score = self._end_game()
 
         else:
@@ -21,18 +22,18 @@ class TennisGame:
         return score
 
     def _even_score(self):
-        if self.scores[self.player1_name] == 0:
+        if self.player1.score == 0:
             return "Love-All"
-        elif self.scores[self.player1_name] == 1:
+        elif self.player1.score == 1:
             return "Fifteen-All"
-        elif self.scores[self.player1_name] == 2:
+        elif self.player1.score == 2:
             return "Thirty-All"
         else:
             return "Deuce"
     
     def _end_game(self):
-        score_difference = self.scores[self.player1_name] - self.scores[self.player2_name]
-        leading_player = self.player1_name if score_difference > 0 else self.player2_name
+        score_difference = self.player1.score - self.player2.score
+        leading_player = self.player1.name if score_difference > 0 else self.player2.name
         if abs(score_difference) == 1:
             return "Advantage " + leading_player
         else:
@@ -45,4 +46,12 @@ class TennisGame:
             2: "Thirty",
             3: "Forty"
         }
-        return scores[self.scores[self.player1_name]] + "-" + scores[self.scores[self.player2_name]]
+        return scores[self.player1.score] + "-" + scores[self.player2.score]
+    
+class Player:
+    def __init__(self, name):
+        self.name = name
+        self.score = 0
+    
+    def _won_point(self):
+        self.score += 1
